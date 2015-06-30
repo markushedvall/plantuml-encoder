@@ -1,6 +1,6 @@
 {
   "name": "plantuml-encoder",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "PlantUML encoder, works in browser & node.js",
   "author": "Markus Hedvall",
   "repository": "https://github.com/markushedvall/plantuml-encoder",
