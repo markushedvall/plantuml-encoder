@@ -6,7 +6,7 @@
   "authors": [
     "Markus Hedvall <mackanhedvall@gmail.com>"
   ],
-  "description": "Encodes PlantUML text into encoding for URL",
+  "description": "PlantUML encoder, works in browser & node.js",
   "license": "MIT",
   "ignore": [
     "**/.*",
