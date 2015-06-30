@@ -1,6 +1,6 @@
 {
   "name": "plantuml-encoder",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Encodes PlantUML text into encoding for URL",
   "author": "Markus Hedvall",
   "repository": "https://github.com/markushedvall/plantuml-encoder",
