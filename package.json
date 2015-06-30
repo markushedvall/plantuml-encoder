@@ -5,5 +5,8 @@
   "author": "Markus Hedvall",
   "repository": "https://github.com/markushedvall/plantuml-encoder",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "pako": "^0.2.7"
+  }
 }
