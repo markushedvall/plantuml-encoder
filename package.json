@@ -11,11 +11,13 @@
   },
   "devDependencies": {
     "browserify": "^10.2.4",
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
     "standard": "^4.5.4",
     "uglify-js": "^2.4.23"
   },
   "scripts": {
-    "test": "standard",
+    "test": "standard && mocha",
     "build": "npm run browserify && npm run uglify",
     "browserify": "browserify ./index.js --s plantumlEncoder -o dist/plantuml-encoder.js",
     "uglify": "uglifyjs dist/plantuml-encoder.js -c -m -o dist/plantuml-encoder.min.js"
