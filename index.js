@@ -1,1 +1,1 @@
-module.exports = require('./lib/plantuml-encoder');
+module.exports = require('./lib/plantuml-encoder')

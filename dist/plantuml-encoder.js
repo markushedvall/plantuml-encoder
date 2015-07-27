@@ -1,8 +1,8 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.plantumlEncoder = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = require('./lib/plantuml-encoder');
+module.exports = require('./lib/plantuml-encoder')
 
 },{"./lib/plantuml-encoder":3}],2:[function(require,module,exports){
-'use strict';
+'use strict'
 
 // Encode code taken from the PlantUML website:
 // http://plantuml.sourceforge.net/codejavascript2.html
@@ -10,71 +10,77 @@ module.exports = require('./lib/plantuml-encoder');
 // It is described as being "a transformation close to base64"
 // The code has been slightly modified to pass linters
 
-function encode6bit(b) {
+function encode6bit (b) {
   if (b < 10) {
-    return String.fromCharCode(48 + b);
+    return String.fromCharCode(48 + b)
   }
-  b -= 10;
+  b -= 10
   if (b < 26) {
-    return String.fromCharCode(65 + b);
+    return String.fromCharCode(65 + b)
   }
-  b -= 26;
+  b -= 26
   if (b < 26) {
-    return String.fromCharCode(97 + b);
+    return String.fromCharCode(97 + b)
   }
-  b -= 26;
+  b -= 26
   if (b === 0) {
-    return '-';
+    return '-'
   }
   if (b === 1) {
-    return '_';
+    return '_'
   }
-  return '?';
+  return '?'
 }
 
-function append3bytes(b1, b2, b3) {
-  var c1 = b1 >> 2;
-  var c2 = ((b1 & 0x3) << 4) | (b2 >> 4);
-  var c3 = ((b2 & 0xF) << 2) | (b3 >> 6);
-  var c4 = b3 & 0x3F;
-  var r = '';
-  r += encode6bit(c1 & 0x3F);
-  r += encode6bit(c2 & 0x3F);
-  r += encode6bit(c3 & 0x3F);
-  r += encode6bit(c4 & 0x3F);
-  return r;
+function append3bytes (b1, b2, b3) {
+  var c1 = b1 >> 2
+  var c2 = ((b1 & 0x3) << 4) | (b2 >> 4)
+  var c3 = ((b2 & 0xF) << 2) | (b3 >> 6)
+  var c4 = b3 & 0x3F
+  var r = ''
+  r += encode6bit(c1 & 0x3F)
+  r += encode6bit(c2 & 0x3F)
+  r += encode6bit(c3 & 0x3F)
+  r += encode6bit(c4 & 0x3F)
+  return r
 }
 
-module.exports.encode = function(data) {
-  var r = '';
+module.exports.encode = function (data) {
+  var r = ''
   for (var i = 0; i < data.length; i += 3) {
     if (i + 2 === data.length) {
-      r += append3bytes(data.charCodeAt(i), data.charCodeAt(i + 1), 0);
+      r += append3bytes(data.charCodeAt(i), data.charCodeAt(i + 1), 0)
     } else if (i + 1 === data.length) {
-      r += append3bytes(data.charCodeAt(i), 0, 0);
+      r += append3bytes(data.charCodeAt(i), 0, 0)
     } else {
       r += append3bytes(data.charCodeAt(i),
                         data.charCodeAt(i + 1),
-                        data.charCodeAt(i + 2));
+                        data.charCodeAt(i + 2))
     }
   }
-  return r;
-};
+  return r
+}
 
 },{}],3:[function(require,module,exports){
-'use strict';
+'use strict'
 
-var pakoDeflate = require('../node_modules/pako/lib/deflate.js');
-var encode64 = require('./encode64');
+var pakoDeflate = require('../node_modules/pako/lib/deflate.js')
+var encode64 = require('./encode64')
 
 // 1. Encode in UTF-8
 // 2. Compress using Deflate algorithm
 // 3. Reencode using a transformation close to base64
-module.exports.encodeSync = function(text) {
-  var utf8 = unescape(encodeURIComponent(text));
-  var deflated = pakoDeflate.deflate(utf8, {level: 9, to: 'string'});
-  return encode64.encode(deflated);
-};
+
+module.exports.encode = function (text) {
+  var utf8 = unescape(encodeURIComponent(text))
+  var deflated = pakoDeflate.deflate(utf8, { level: 9, to: 'string' })
+  return encode64.encode(deflated)
+}
+
+// Deprecated, might be removed in future releases
+module.exports.encodeSync = function (text) {
+  module.exports.encode(text)
+}
 
 },{"../node_modules/pako/lib/deflate.js":4,"./encode64":2}],4:[function(require,module,exports){
 'use strict';
