@@ -1,7 +1,7 @@
 {
   "name": "plantuml-encoder",
   "main": "dist/plantuml-encoder.js",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "homepage": "https://github.com/markushedvall/plantuml-encoder",
   "authors": [
     "Markus Hedvall <mackanhedvall@gmail.com>"
