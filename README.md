@@ -1,7 +1,7 @@
 # plantuml-encoder
 PlantUML encoder for browsers and Node.js.
 
-![npm Version](https://img.shields.io/npm/v/plantuml-encoder.svg) [![build-status](https://travis-ci.org/markushedvall/plantuml-encoder.svg?branch=master)](https://travis-ci.org/markushedvall/plantuml-encoder) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+[![npm Version](https://img.shields.io/npm/v/plantuml-encoder.svg)](https://www.npmjs.com/package/plantuml-encoder) [![build-status](https://travis-ci.org/markushedvall/plantuml-encoder.svg?branch=master)](https://travis-ci.org/markushedvall/plantuml-encoder) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 
 Encoded PlantUML can be used to create PlantUML URL links.
 
