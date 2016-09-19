@@ -10,5 +10,9 @@ describe('plantuml-encoder', function () {
       var encoded = plantumlEncoder.encode('A -> B: Hello')
       expect(encoded).to.equal('UDfpLD2rKt2oKl18pSd91m0KGWDz')
     })
+    it('should encode UTF-8 "A -> B: Hello/你好"', function () {
+      var encoded = plantumlEncoder.encode('A -> B: Hello/你好')
+      expect(encoded).to.equal('UDfpLD2rKt2oKl18pSd9rt-oTy7JfNi1FZK8D000')
+    })
   })
 })
