@@ -11,15 +11,15 @@
     "encoder"
   ],
   "dependencies": {
-    "pako": "^0.2.7",
+    "pako": "1.0.3",
     "utf8-bytes": "0.0.1"
   },
   "devDependencies": {
-    "browserify": "^10.2.4",
+    "browserify": "^13.1.0",
     "chai": "^3.2.0",
     "mocha": "^2.2.5",
     "standard": "^4.5.4",
-    "uglify-js": "^2.4.23"
+    "uglify-js": "^2.7.3"
   },
   "scripts": {
     "test": "standard && mocha",
