@@ -11,7 +11,8 @@
     "encoder"
   ],
   "dependencies": {
-    "pako": "^0.2.7"
+    "pako": "^0.2.7",
+    "utf8-bytes": "0.0.1"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
