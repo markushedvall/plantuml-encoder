@@ -29,6 +29,15 @@ console.log(encoded) // UDfpLD2rKt2oKl18pSd91m0KGWDz
 
 var url = 'http://www.plantuml.com/plantuml/img/' + encoded
 ```
+# decode example
+
+```javascript
+var plantumlEncoder = require('plantuml-encoder')
+
+var plain = plantumlEncoder.decode('UDfpLD2rKt2oKl18pSd91m0KGWDz')
+console.log(plain) // A -> B: Hello
+
+```
 
 The URL can then be used to display the diagram:
 
