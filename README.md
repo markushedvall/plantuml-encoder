@@ -25,14 +25,14 @@ bower install plantuml-encoder
 var plantumlEncoder = require('plantuml-encoder')
 
 var encoded = plantumlEncoder.encode('A -> B: Hello')
-console.log(encoded) // UDfpLD2rKt2oKl18pSd91m0KGWDz
+console.log(encoded) // SrJGjLDmibBmICt9oGS0
 
 var url = 'http://www.plantuml.com/plantuml/img/' + encoded
 ```
 
 The URL can then be used to display the diagram:
 
-![alt tag](http://www.plantuml.com/plantuml/img/UDfpLD2rKt2oKl18pSd91m0KGWDz)
+![alt tag](http://www.plantuml.com/plantuml/img/SrJGjLDmibBmICt9oGS0)
 
 # License
 MIT
