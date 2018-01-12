@@ -8,11 +8,11 @@ describe('plantuml-encoder', function () {
   describe('#encode()', function () {
     it('should encode "A -> B: Hello"', function () {
       var encoded = plantumlEncoder.encode('A -> B: Hello')
-      expect(encoded).to.equal('UDfpLD2rKt2oKl18pSd91m0KGWDz')
+      expect(encoded).to.equal('SrJGjLDmibBmICt9oGS0')
     })
     it('should encode UTF-8 "A -> B: Hello/你好"', function () {
       var encoded = plantumlEncoder.encode('A -> B: Hello/你好')
-      expect(encoded).to.equal('UDfpLD2rKt2oKl18pSd9rt-oTy7JfNi1FZK8D000')
+      expect(encoded).to.equal('SrJGjLDmibBmICt9oTT_idV1qwLx0G00')
     })
   })
 })
