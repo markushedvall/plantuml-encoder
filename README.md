@@ -34,5 +34,15 @@ The URL can then be used to display the diagram:
 
 ![alt tag](http://www.plantuml.com/plantuml/img/SrJGjLDmibBmICt9oGS0)
 
+# Decode example
+
+```javascript
+var plantumlEncoder = require('plantuml-encoder')
+
+var plain = plantumlEncoder.decode('SrJGjLDmibBmICt9oGS0')
+console.log(plain) // A -> B: Hello
+
+```
+
 # License
 MIT
