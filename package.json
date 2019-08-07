@@ -15,11 +15,11 @@
     "utf8-bytes": "0.0.1"
   },
   "devDependencies": {
-    "browserify": "^13.1.0",
-    "chai": "^3.2.0",
-    "mocha": "^2.2.5",
-    "standard": "^4.5.4",
-    "uglify-js": "^2.7.3"
+    "browserify": "^16.x",
+    "chai": "^4.x",
+    "mocha": "^6.x",
+    "standard": "^13.x",
+    "uglify-js": "^3.x"
   },
   "scripts": {
     "test": "standard && mocha",
