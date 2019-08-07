@@ -21,6 +21,11 @@
     "standard": "^13.x",
     "uglify-js": "^3.x"
   },
+  "files": [
+    "index.js",
+    "lib/",
+    "dist/"
+  ],
   "scripts": {
     "test": "standard && mocha",
     "build": "npm run browserify && npm run uglify",
