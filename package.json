@@ -29,8 +29,12 @@
   "scripts": {
     "test": "standard && mocha",
     "build": "npm run browserify && npm run uglify",
-    "browserify": "browserify ./index.js --s plantumlEncoder -o dist/plantuml-encoder.js",
-    "uglify": "uglifyjs dist/plantuml-encoder.js -c -m -o dist/plantuml-encoder.min.js"
+    "browserify": "npm run browserifyEncoder && npm run browserifyDecoder",
+    "browserifyEncoder": "browserify lib/encoder.js -s plantumlEncoder -o dist/plantuml-encoder.js",
+    "browserifyDecoder": "browserify lib/decoder.js -s plantumlEncoder -o dist/plantuml-decoder.js",
+    "uglify": "npm run uglifyEncoder && npm run uglifyDecoder",
+    "uglifyEncoder": "uglifyjs dist/plantuml-encoder.js -c -m -o dist/plantuml-encoder.min.js",
+    "uglifyDecoder": "uglifyjs dist/plantuml-decoder.js -c -m -o dist/plantuml-decoder.min.js"
   },
   "standard": {
     "ignore": "dist/"

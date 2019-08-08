@@ -1,1 +1,4 @@
-module.exports = require('./lib/plantuml-encoder')
+module.exports = {
+  encode: require('./lib/encoder').encode,
+  decode: require('./lib/decoder').decode
+}
