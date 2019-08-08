@@ -111,7 +111,7 @@ var Z_DEFLATED  = 8;
 /* internal
  * Deflate.chunks -> Array
  *
- * Chunks of output data, if [[Deflate#onData]] not overriden.
+ * Chunks of output data, if [[Deflate#onData]] not overridden.
  **/
 
 /**
@@ -264,7 +264,7 @@ function Deflate(options) {
  * - data (Uint8Array|Array|ArrayBuffer|String): input data. Strings will be
  *   converted to utf8 byte sequence.
  * - mode (Number|Boolean): 0..6 for corresponding Z_NO_FLUSH..Z_TREE modes.
- *   See constants. Skipped or `false` means Z_NO_FLUSH, `true` meansh Z_FINISH.
+ *   See constants. Skipped or `false` means Z_NO_FLUSH, `true` means Z_FINISH.
  *
  * Sends input data to deflate pipe, generating [[Deflate#onData]] calls with
  * new compressed chunks. Returns `true` on success. The last data block must have
@@ -353,7 +353,7 @@ Deflate.prototype.push = function (data, mode) {
 
 /**
  * Deflate#onData(chunk) -> Void
- * - chunk (Uint8Array|Array|String): ouput data. Type of array depends
+ * - chunk (Uint8Array|Array|String): output data. Type of array depends
  *   on js engine support. When string output requested, each chunk
  *   will be string.
  *
@@ -430,7 +430,7 @@ function deflate(input, options) {
   deflator.push(input, true);
 
   // That will never happens, if you don't cheat with options :)
-  if (deflator.err) { throw deflator.msg; }
+  if (deflator.err) { throw deflator.msg || msg[deflator.err]; }
 
   return deflator.result;
 }
@@ -479,6 +479,9 @@ var TYPED_OK =  (typeof Uint8Array !== 'undefined') &&
                 (typeof Uint16Array !== 'undefined') &&
                 (typeof Int32Array !== 'undefined');
 
+function _has(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
 
 exports.assign = function (obj /*from1, from2, from3, ...*/) {
   var sources = Array.prototype.slice.call(arguments, 1);
@@ -491,7 +494,7 @@ exports.assign = function (obj /*from1, from2, from3, ...*/) {
     }
 
     for (var p in source) {
-      if (source.hasOwnProperty(p)) {
+      if (_has(source, p)) {
         obj[p] = source[p];
       }
     }
@@ -586,7 +589,7 @@ var utils = require('./common');
 // Quick check if we can use fast array to bin string conversion
 //
 // - apply(Array) can fail on Android 2.2
-// - apply(Uint8Array) can fail on iOS 5.1 Safary
+// - apply(Uint8Array) can fail on iOS 5.1 Safari
 //
 var STR_APPLY_OK = true;
 var STR_APPLY_UIA_OK = true;
@@ -661,8 +664,10 @@ exports.string2buf = function (str) {
 
 // Helper (used in 2 places)
 function buf2binstring(buf, len) {
-  // use fallback for big arrays to avoid stack overflow
-  if (len < 65537) {
+  // On Chrome, the arguments in a function call that are allowed is `65534`.
+  // If the length of the buffer is smaller than that, we can use this optimization,
+  // otherwise we will take a slower path.
+  if (len < 65534) {
     if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
       return String.fromCharCode.apply(null, utils.shrinkBuf(buf, len));
     }
@@ -751,11 +756,11 @@ exports.utf8border = function (buf, max) {
   pos = max - 1;
   while (pos >= 0 && (buf[pos] & 0xC0) === 0x80) { pos--; }
 
-  // Fuckup - very small and broken sequence,
+  // Very small and broken sequence,
   // return max, because we should return something anyway.
   if (pos < 0) { return max; }
 
-  // If we came to start of buffer - that means vuffer is too small,
+  // If we came to start of buffer - that means buffer is too small,
   // return max too.
   if (pos === 0) { return max; }
 
@@ -766,8 +771,27 @@ exports.utf8border = function (buf, max) {
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
-// It doesn't worth to make additional optimizationa as in original.
+// It isn't worth it to make additional optimizations as in original.
 // Small size is preferable.
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
 
 function adler32(adler, buf, len, pos) {
   var s1 = (adler & 0xffff) |0,
@@ -803,6 +827,24 @@ module.exports = adler32;
 // So write code to minimize size - no pregenerated tables
 // and array tools dependencies.
 
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
 
 // Use ordinary array, since untyped makes no boost here
 function makeTable() {
@@ -841,6 +883,25 @@ module.exports = crc32;
 
 },{}],8:[function(require,module,exports){
 'use strict';
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
 
 var utils   = require('../utils/common');
 var trees   = require('./trees');
@@ -2277,7 +2338,7 @@ function deflate(strm, flush) {
                     (!s.gzhead.extra ? 0 : 4) +
                     (!s.gzhead.name ? 0 : 8) +
                     (!s.gzhead.comment ? 0 : 16)
-                );
+        );
         put_byte(s, s.gzhead.time & 0xff);
         put_byte(s, (s.gzhead.time >> 8) & 0xff);
         put_byte(s, (s.gzhead.time >> 16) & 0xff);
@@ -2699,6 +2760,25 @@ exports.deflateTune = deflateTune;
 },{"../utils/common":4,"./adler32":6,"./crc32":7,"./messages":9,"./trees":10}],9:[function(require,module,exports){
 'use strict';
 
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
 module.exports = {
   2:      'need dictionary',     /* Z_NEED_DICT       2  */
   1:      'stream end',          /* Z_STREAM_END      1  */
@@ -2714,6 +2794,26 @@ module.exports = {
 },{}],10:[function(require,module,exports){
 'use strict';
 
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+/* eslint-disable space-unary-ops */
 
 var utils = require('../utils/common');
 
@@ -2824,7 +2924,7 @@ var bl_order =
 
 var DIST_CODE_LEN = 512; /* see definition of array dist_code below */
 
-// !!!! Use flat array insdead of structure, Freq = i*2, Len = i*2+1
+// !!!! Use flat array instead of structure, Freq = i*2, Len = i*2+1
 var static_ltree  = new Array((L_CODES + 2) * 2);
 zero(static_ltree);
 /* The static literal tree. Since the bit lengths are imposed, there is no
@@ -3879,7 +3979,7 @@ function _tr_tally(s, dist, lc)
     s.dyn_dtree[d_code(dist) * 2]/*.Freq*/++;
   }
 
-// (!) This block is disabled in zlib defailts,
+// (!) This block is disabled in zlib defaults,
 // don't enable it for binary compatibility
 
 //#ifdef TRUNCATE_BLOCK
@@ -3918,6 +4018,24 @@ exports._tr_align = _tr_align;
 },{"../utils/common":4}],11:[function(require,module,exports){
 'use strict';
 
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
 
 function ZStream() {
   /* next input byte */
