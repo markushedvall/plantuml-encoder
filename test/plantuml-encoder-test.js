@@ -30,12 +30,12 @@ describe('plantuml-encoder', function () {
   describe('#decode()', function () {
     it('should decode "A -> B: Hello"', function () {
       var plain = 'A -> B: Hello'
-      var crypt = 'UDfpLD2rKt2oKl18pSd91m0KGWDz'
+      var crypt = 'SrJGjLDmibBmICt9oGS0'
       var decoded = nodeEncoder.decode(crypt)
       expect(decoded).to.equal(plain)
     })
     it('should decode UTF-8 "A -> B: Hello/你好"', function () {
-      var decoded = nodeEncoder.decode('UDfpLD2rKt2oKl18pSd9rt-oTy7JfNi1FZK8D000')
+      var decoded = nodeEncoder.decode('SrJGjLDmibBmICt9oTT_idV1qwLx0G00')
       expect(decoded).to.equal('A -> B: Hello/你好')
     })
   })
