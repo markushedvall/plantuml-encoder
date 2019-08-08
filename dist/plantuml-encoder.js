@@ -19,6 +19,7 @@ function decode6bit (cc) {
   if (c >= 48) return c - 48
   return '?'
 }
+
 function extract3bytes (data) {
   var c1 = decode6bit(data[0])
   var c2 = decode6bit(data[1])
@@ -30,6 +31,7 @@ function extract3bytes (data) {
 
   return [b1, b2, b3]
 }
+
 module.exports.decode = function (data) {
   var r = ''
   var i = 0
@@ -110,21 +112,6 @@ var pakoDeflate = require('pako/lib/deflate.js')
 var pakoInflate = require('pako/lib/inflate.js')
 var encode64 = require('./encode64')
 var decode64 = require('./decode64')
-var Utf8ArrayToStr = require('./utf8arraytostring')
-
-// 1. decode using a transformation close to base64
-// 2. decompress using Deflate algorithm
-// 3. Encode in UTF-8
-//
-module.exports.decode = function (text) {
-  var t = decode64.decode(text)
-  var inflated = pakoInflate.inflate(t)
-  return Utf8ArrayToStr(inflated)
-}
-
-// 1. Encode in UTF-8
-// 2. Compress using Deflate algorithm
-// 3. Reencode using a transformation close to base64
 
 module.exports.encode = function (text) {
   var data = utf8bytes(text)
@@ -132,52 +119,12 @@ module.exports.encode = function (text) {
   return encode64.encode(deflated)
 }
 
-},{"./decode64":2,"./encode64":3,"./utf8arraytostring":5,"pako/lib/deflate.js":6,"pako/lib/inflate.js":7,"utf8-bytes":21}],5:[function(require,module,exports){
-'use strict'
-// http://www.onicos.com/staff/iz/amuse/javascript/expert/utf.txt
-
-/* utf.js - UTF-8 <=> UTF-16 convertion
- *
- * Copyright (C) 1999 Masanao Izumo <iz@onicos.co.jp>
- * Version: 1.0
- * LastModified: Dec 25 1999
- * This library is free.  You can redistribute it and/or modify it.
- */
-
-module.exports = function (array) {
-  var out, i, len, c
-  var char2, char3
-
-  out = ''
-  len = array.length
-  i = 0
-  while (i < len) {
-    c = array[i++]
-    switch (c >> 4) {
-      case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
-        // 0xxxxxxx
-        out += String.fromCharCode(c)
-        break
-      case 12: case 13:
-        // 110x xxxx   10xx xxxx
-        char2 = array[i++]
-        out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F))
-        break
-      case 14:
-        // 1110 xxxx  10xx xxxx  10xx xxxx
-        char2 = array[i++]
-        char3 = array[i++]
-        out += String.fromCharCode(((c & 0x0F) << 12) |
-                     ((char2 & 0x3F) << 6) |
-                     ((char3 & 0x3F) << 0))
-        break
-    }
-  }
-
-  return out
+module.exports.decode = function (encoded) {
+  var deflated = decode64.decode(encoded)
+  return pakoInflate.inflate(deflated, { to: 'string' })
 }
 
-},{}],6:[function(require,module,exports){
+},{"./decode64":2,"./encode64":3,"pako/lib/deflate.js":5,"pako/lib/inflate.js":6,"utf8-bytes":20}],5:[function(require,module,exports){
 'use strict';
 
 
@@ -579,7 +526,7 @@ exports.deflate = deflate;
 exports.deflateRaw = deflateRaw;
 exports.gzip = gzip;
 
-},{"./utils/common":8,"./utils/strings":9,"./zlib/deflate":13,"./zlib/messages":18,"./zlib/zstream":20}],7:[function(require,module,exports){
+},{"./utils/common":7,"./utils/strings":8,"./zlib/deflate":12,"./zlib/messages":17,"./zlib/zstream":19}],6:[function(require,module,exports){
 'use strict';
 
 
@@ -999,7 +946,7 @@ exports.inflate = inflate;
 exports.inflateRaw = inflateRaw;
 exports.ungzip  = inflate;
 
-},{"./utils/common":8,"./utils/strings":9,"./zlib/constants":11,"./zlib/gzheader":14,"./zlib/inflate":16,"./zlib/messages":18,"./zlib/zstream":20}],8:[function(require,module,exports){
+},{"./utils/common":7,"./utils/strings":8,"./zlib/constants":10,"./zlib/gzheader":13,"./zlib/inflate":15,"./zlib/messages":17,"./zlib/zstream":19}],7:[function(require,module,exports){
 'use strict';
 
 
@@ -1103,7 +1050,7 @@ exports.setTyped = function (on) {
 
 exports.setTyped(TYPED_OK);
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // String encode/decode helpers
 'use strict';
 
@@ -1290,7 +1237,7 @@ exports.utf8border = function (buf, max) {
   return (pos + _utf8len[buf[pos]] > max) ? pos : max;
 };
 
-},{"./common":8}],10:[function(require,module,exports){
+},{"./common":7}],9:[function(require,module,exports){
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
@@ -1324,7 +1271,7 @@ function adler32(adler, buf, len, pos) {
 
 module.exports = adler32;
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 
@@ -1376,7 +1323,7 @@ module.exports = {
   //Z_NULL:                 null // Use -1 or null inline, depending on var type
 };
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 // Note: we can't get significant speed boost here.
@@ -1419,7 +1366,7 @@ function crc32(crc, buf, len, pos) {
 
 module.exports = crc32;
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var utils   = require('../utils/common');
@@ -3276,7 +3223,7 @@ exports.deflatePrime = deflatePrime;
 exports.deflateTune = deflateTune;
 */
 
-},{"../utils/common":8,"./adler32":10,"./crc32":12,"./messages":18,"./trees":19}],14:[function(require,module,exports){
+},{"../utils/common":7,"./adler32":9,"./crc32":11,"./messages":17,"./trees":18}],13:[function(require,module,exports){
 'use strict';
 
 
@@ -3318,7 +3265,7 @@ function GZheader() {
 
 module.exports = GZheader;
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 // See state defs from inflate.js
@@ -3646,7 +3593,7 @@ module.exports = function inflate_fast(strm, start) {
   return;
 };
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 
@@ -5186,7 +5133,7 @@ exports.inflateSyncPoint = inflateSyncPoint;
 exports.inflateUndermine = inflateUndermine;
 */
 
-},{"../utils/common":8,"./adler32":10,"./crc32":12,"./inffast":15,"./inftrees":17}],17:[function(require,module,exports){
+},{"../utils/common":7,"./adler32":9,"./crc32":11,"./inffast":14,"./inftrees":16}],16:[function(require,module,exports){
 'use strict';
 
 
@@ -5515,7 +5462,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
   return 0;
 };
 
-},{"../utils/common":8}],18:[function(require,module,exports){
+},{"../utils/common":7}],17:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -5530,7 +5477,7 @@ module.exports = {
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 
@@ -6734,7 +6681,7 @@ exports._tr_flush_block  = _tr_flush_block;
 exports._tr_tally = _tr_tally;
 exports._tr_align = _tr_align;
 
-},{"../utils/common":8}],20:[function(require,module,exports){
+},{"../utils/common":7}],19:[function(require,module,exports){
 'use strict';
 
 
@@ -6765,7 +6712,7 @@ function ZStream() {
 
 module.exports = ZStream;
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = function (str) {
     var bytes = [];
     for (var i = 0; i < str.length; i++) {
