@@ -1,6 +1,15 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.plantumlEncoder = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict'
 
+var pako = require('pako/lib/deflate.js')
+
+module.exports = function (data) {
+  return pako.deflateRaw(data, { level: 9, to: 'string' })
+}
+
+},{"pako/lib/deflate.js":4}],2:[function(require,module,exports){
+'use strict'
+
 // Encode code taken from the PlantUML website:
 // http://plantuml.sourceforge.net/codejavascript2.html
 
@@ -58,18 +67,18 @@ module.exports = function (data) {
   return r
 }
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict'
 
-var pako = require('pako/lib/deflate.js')
+var deflate = require('./deflate')
 var encode64 = require('./encode64')
 
-module.exports.encode = function (text) {
-  var deflated = pako.deflateRaw(text, { level: 9, to: 'string' })
+module.exports.encode = function (puml) {
+  var deflated = deflate(puml)
   return encode64(deflated)
 }
 
-},{"./encode64":1,"pako/lib/deflate.js":3}],3:[function(require,module,exports){
+},{"./deflate":1,"./encode64":2}],4:[function(require,module,exports){
 'use strict';
 
 
@@ -471,7 +480,7 @@ exports.deflate = deflate;
 exports.deflateRaw = deflateRaw;
 exports.gzip = gzip;
 
-},{"./utils/common":4,"./utils/strings":5,"./zlib/deflate":8,"./zlib/messages":9,"./zlib/zstream":11}],4:[function(require,module,exports){
+},{"./utils/common":5,"./utils/strings":6,"./zlib/deflate":9,"./zlib/messages":10,"./zlib/zstream":12}],5:[function(require,module,exports){
 'use strict';
 
 
@@ -578,7 +587,7 @@ exports.setTyped = function (on) {
 
 exports.setTyped(TYPED_OK);
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // String encode/decode helpers
 'use strict';
 
@@ -767,7 +776,7 @@ exports.utf8border = function (buf, max) {
   return (pos + _utf8len[buf[pos]] > max) ? pos : max;
 };
 
-},{"./common":4}],6:[function(require,module,exports){
+},{"./common":5}],7:[function(require,module,exports){
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
@@ -820,7 +829,7 @@ function adler32(adler, buf, len, pos) {
 
 module.exports = adler32;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 // Note: we can't get significant speed boost here.
@@ -881,7 +890,7 @@ function crc32(crc, buf, len, pos) {
 
 module.exports = crc32;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -2757,7 +2766,7 @@ exports.deflatePrime = deflatePrime;
 exports.deflateTune = deflateTune;
 */
 
-},{"../utils/common":4,"./adler32":6,"./crc32":7,"./messages":9,"./trees":10}],9:[function(require,module,exports){
+},{"../utils/common":5,"./adler32":7,"./crc32":8,"./messages":10,"./trees":11}],10:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -2791,7 +2800,7 @@ module.exports = {
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -4015,7 +4024,7 @@ exports._tr_flush_block  = _tr_flush_block;
 exports._tr_tally = _tr_tally;
 exports._tr_align = _tr_align;
 
-},{"../utils/common":4}],11:[function(require,module,exports){
+},{"../utils/common":5}],12:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -4064,5 +4073,5 @@ function ZStream() {
 
 module.exports = ZStream;
 
-},{}]},{},[2])(2)
+},{}]},{},[3])(3)
 });

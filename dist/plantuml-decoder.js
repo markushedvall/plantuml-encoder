@@ -1,6 +1,15 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.plantumlEncoder = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict'
 
+var pako = require('pako/lib/inflate.js')
+
+module.exports = function (data) {
+  return pako.inflateRaw(data, { to: 'string' })
+}
+
+},{"pako/lib/inflate.js":4}],2:[function(require,module,exports){
+'use strict'
+
 // Reverse of
 // http://plantuml.sourceforge.net/codejavascript2.html
 
@@ -41,18 +50,18 @@ module.exports = function (data) {
   return r
 }
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict'
 
-var pako = require('pako/lib/inflate.js')
+var inflate = require('./inflate')
 var decode64 = require('./decode64')
 
 module.exports.decode = function (encoded) {
   var deflated = decode64(encoded)
-  return pako.inflateRaw(deflated, { to: 'string' })
+  return inflate(deflated)
 }
 
-},{"./decode64":1,"pako/lib/inflate.js":3}],3:[function(require,module,exports){
+},{"./decode64":2,"./inflate":1}],4:[function(require,module,exports){
 'use strict';
 
 
@@ -477,7 +486,7 @@ exports.inflate = inflate;
 exports.inflateRaw = inflateRaw;
 exports.ungzip  = inflate;
 
-},{"./utils/common":4,"./utils/strings":5,"./zlib/constants":7,"./zlib/gzheader":9,"./zlib/inflate":11,"./zlib/messages":13,"./zlib/zstream":14}],4:[function(require,module,exports){
+},{"./utils/common":5,"./utils/strings":6,"./zlib/constants":8,"./zlib/gzheader":10,"./zlib/inflate":12,"./zlib/messages":14,"./zlib/zstream":15}],5:[function(require,module,exports){
 'use strict';
 
 
@@ -584,7 +593,7 @@ exports.setTyped = function (on) {
 
 exports.setTyped(TYPED_OK);
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // String encode/decode helpers
 'use strict';
 
@@ -773,7 +782,7 @@ exports.utf8border = function (buf, max) {
   return (pos + _utf8len[buf[pos]] > max) ? pos : max;
 };
 
-},{"./common":4}],6:[function(require,module,exports){
+},{"./common":5}],7:[function(require,module,exports){
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
@@ -826,7 +835,7 @@ function adler32(adler, buf, len, pos) {
 
 module.exports = adler32;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -896,7 +905,7 @@ module.exports = {
   //Z_NULL:                 null // Use -1 or null inline, depending on var type
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 // Note: we can't get significant speed boost here.
@@ -957,7 +966,7 @@ function crc32(crc, buf, len, pos) {
 
 module.exports = crc32;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -1017,7 +1026,7 @@ function GZheader() {
 
 module.exports = GZheader;
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -1364,7 +1373,7 @@ module.exports = function inflate_fast(strm, start) {
   return;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -2922,7 +2931,7 @@ exports.inflateSyncPoint = inflateSyncPoint;
 exports.inflateUndermine = inflateUndermine;
 */
 
-},{"../utils/common":4,"./adler32":6,"./crc32":8,"./inffast":10,"./inftrees":12}],12:[function(require,module,exports){
+},{"../utils/common":5,"./adler32":7,"./crc32":9,"./inffast":11,"./inftrees":13}],13:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -3267,7 +3276,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
   return 0;
 };
 
-},{"../utils/common":4}],13:[function(require,module,exports){
+},{"../utils/common":5}],14:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -3301,7 +3310,7 @@ module.exports = {
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
@@ -3350,5 +3359,5 @@ function ZStream() {
 
 module.exports = ZStream;
 
-},{}]},{},[2])(2)
+},{}]},{},[3])(3)
 });
